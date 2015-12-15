@@ -1,0 +1,4 @@
+tcp      6 40 CLOSE_WAIT src=192.168.3.157 dst=54.230.186.17 sport=51595 dport=443 packets=10 bytes=1221 src=54.230.186.17 dst=192.168.2.106 sport=443 dport=51595 packets=13 bytes=7312 [ASSURED] mark=0 use=2
+tcp      6 431959 ESTABLISHED src=192.168.3.116 dst=108.160.161.122 sport=64425 dport=443 packets=78 bytes=30625 src=108.160.161.122 dst=192.168.2.106 sport=443 dport=64425 packets=149 bytes=32934 [ASSURED] mark=0 use=2
+udp      17 160 src=192.168.3.116 dst=157.56.144.215 sport=64646 dport=3544 packets=212 bytes=18868 src=157.56.144.215 dst=192.168.2.106 sport=3544 dport=64646 packets=212 bytes=29044 [ASSURED] mark=0 use=2
+udp      17 14 src=192.168.2.106 dst=8.8.4.4 sport=40990 dport=53 packets=1 bytes=74 src=8.8.4.4 dst=192.168.2.106 sport=53 dport=40990 packets=1 bytes=123 mark=0 use=2
