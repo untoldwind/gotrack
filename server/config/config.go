@@ -23,7 +23,7 @@ func NewConfig(configDir string, logger logging.Logger) (*Config, error) {
 
 	config := Config{
 		Server:   newServerConfig(),
-		Provider: newProvderConfig(),
+		Provider: newProviderConfig(),
 		Store:    newStoreConfig(),
 	}
 	files, err := ioutil.ReadDir(absoluteConfigDir)

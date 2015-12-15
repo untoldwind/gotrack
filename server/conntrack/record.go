@@ -7,12 +7,11 @@ import (
 )
 
 type Connection struct {
+	Transfer
 	Src     string `json:"src"`
 	SrcPort uint16 `json:"src_port"`
 	Dst     string `json:"destination"`
 	DstPort uint16 `json:"dst_port"`
-	Packets uint64 `json:"packets"`
-	Bytes   uint64 `json:"bytes"`
 }
 
 // Conntrack record

@@ -7,6 +7,8 @@ import (
 )
 
 type Provider interface {
+	Totals() (*Totals, error)
+
 	Records() ([]*Record, error)
 }
 

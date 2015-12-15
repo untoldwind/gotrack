@@ -34,6 +34,10 @@
 			"Rev": "530dd3d2cafa09958178e8c557bc4abeea1651a5"
 		},
 		{
+			"ImportPath": "github.com/untoldwind/routing",
+			"Rev": "e2b66c9209fda31d7cab0b4721c47b8fd40d4607"
+		},
+		{
 			"ImportPath": "gopkg.in/yaml.v2",
 			"Rev": "53feefa2559fb8dfa8d81baad31be332c97d6c77"
 		}
