@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/untoldwind/gotrack/server/conntrack"
 	"github.com/untoldwind/gotrack/server/http"
+	"github.com/untoldwind/gotrack/server/store"
 )
 
 var ServerCommand = cli.Command{
@@ -13,13 +14,20 @@ var ServerCommand = cli.Command{
 }
 
 func serverCommand(ctx *cli.Context, runCtx *runContext) {
-	_, err := conntrack.NewProvider(runCtx.config.Provider, runCtx.logger)
+	provider, err := conntrack.NewProvider(runCtx.config.Provider, runCtx.logger)
 	if err != nil {
 		runCtx.logger.ErrorErr(err)
 		return
 	}
 
-	server := http.NewServer(runCtx.config.Server, runCtx.logger)
+	store, err := store.NewStore(runCtx.config.Store, provider, runCtx.logger)
+	if err != nil {
+		runCtx.logger.ErrorErr(err)
+		return
+	}
+	defer store.Stop()
+
+	server := http.NewServer(runCtx.config.Server, store, runCtx.logger)
 
 	if err := server.Start(); err != nil {
 		runCtx.logger.ErrorErr(err)

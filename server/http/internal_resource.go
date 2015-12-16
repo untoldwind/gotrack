@@ -23,7 +23,7 @@ type HealthVO struct {
 }
 
 func InternalRoutes(parent logging.Logger) routing.Matcher {
-	logger := parent.WithContext(map[string]interface{}{"resource": "certificates"})
+	logger := parent.WithContext(map[string]interface{}{"resource": "internal"})
 	resource := &internalResource{
 		logger: logger,
 	}

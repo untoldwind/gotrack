@@ -5,15 +5,7 @@ type StoreConfig struct {
 }
 
 func newStoreConfig() *StoreConfig {
-	return &StoreConfig{}
-}
-
-func readStoreConfig(fileName string) (*StoreConfig, error) {
-	var storeConfig StoreConfig
-
-	if err := loadConfigFile(fileName, &storeConfig); err != nil {
-		return nil, err
+	return &StoreConfig{
+		Type: "memory",
 	}
-
-	return &storeConfig, nil
 }

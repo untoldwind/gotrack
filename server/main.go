@@ -20,6 +20,10 @@ func main() {
 			Value: "/etc/gotrack.d",
 			Usage: "config directory",
 		},
+		cli.BoolFlag{
+			Name:  "log-syslog",
+			Usage: "Log to syslog",
+		},
 		cli.StringFlag{
 			Name:  "log-file",
 			Value: "",

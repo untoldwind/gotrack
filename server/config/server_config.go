@@ -11,13 +11,3 @@ func newServerConfig() *ServerConfig {
 		HttpPort:    8080,
 	}
 }
-
-func readServerConfig(fileName string) (*ServerConfig, error) {
-	var serverConfig ServerConfig
-
-	if err := loadConfigFile(fileName, &serverConfig); err != nil {
-		return nil, err
-	}
-
-	return &serverConfig, nil
-}

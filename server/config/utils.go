@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/go-errors/errors"
 	"io/ioutil"
 	"strings"
 
@@ -15,7 +15,7 @@ func isConfigFile(fileName string) bool {
 
 func loadConfigFile(fileName string, configValue interface{}) error {
 	if !isConfigFile(fileName) {
-		return fmt.Errorf("%s is not a configuration file", fileName)
+		return errors.Errorf("%s is not a configuration file", fileName)
 	}
 
 	data, err := ioutil.ReadFile(fileName)
@@ -28,16 +28,16 @@ func loadConfigFile(fileName string, configValue interface{}) error {
 	case strings.HasSuffix(fileName, ".json"):
 		err := json.Unmarshal(data, configValue)
 		if err != nil {
-			return fmt.Errorf("JSON error in %s: %s", fileName, err.Error())
+			return errors.Errorf("JSON error in %s: %s", fileName, err.Error())
 		}
 		return nil
 	case strings.HasSuffix(fileName, ".yaml"):
 		err := yaml.Unmarshal(data, configValue)
 		if err != nil {
-			return fmt.Errorf("JSON error in %s: %s", fileName, err.Error())
+			return errors.Errorf("JSON error in %s: %s", fileName, err.Error())
 		}
 		return nil
 	default:
-		return fmt.Errorf("%s is not a valid config file", fileName)
+		return errors.Errorf("%s is not a valid config file", fileName)
 	}
 }

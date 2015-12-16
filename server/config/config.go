@@ -1,18 +1,16 @@
 package config
 
 import (
-	"io/ioutil"
+	"github.com/untoldwind/gotrack/server/logging"
+	"os"
 	"path"
 	"path/filepath"
-	"strings"
-
-	"github.com/untoldwind/gotrack/server/logging"
 )
 
 type Config struct {
-	Server   *ServerConfig
-	Provider *ProviderConfig
-	Store    *StoreConfig
+	Server   *ServerConfig   `json:"server" yaml:"server"`
+	Provider *ProviderConfig `json:"provider" yaml:"provider"`
+	Store    *StoreConfig    `json:"store" yaml:"store"`
 }
 
 func NewConfig(configDir string, logger logging.Logger) (*Config, error) {
@@ -26,33 +24,18 @@ func NewConfig(configDir string, logger logging.Logger) (*Config, error) {
 		Provider: newProviderConfig(),
 		Store:    newStoreConfig(),
 	}
-	files, err := ioutil.ReadDir(absoluteConfigDir)
-	if err != nil {
-		logger.Warnf("Read config failed (will use defaults): %s", err.Error())
-		return &config, nil
-	}
-	for _, file := range files {
-		switch {
-		case !file.IsDir() && strings.HasPrefix(file.Name(), "server."):
-			var err error
-			config.Server, err = readServerConfig(path.Join(absoluteConfigDir, file.Name()))
-			if err != nil {
-				return nil, err
-			}
-		case !file.IsDir() && strings.HasPrefix(file.Name(), "provider."):
-			var err error
-			config.Provider, err = readProviderConfig(path.Join(absoluteConfigDir, file.Name()))
-			if err != nil {
-				return nil, err
-			}
-		case !file.IsDir() && strings.HasPrefix(file.Name(), "store."):
-			var err error
-			config.Store, err = readStoreConfig(path.Join(absoluteConfigDir, file.Name()))
-			if err != nil {
+
+	for _, name := range []string{"config.json", "config.yaml"} {
+		fileName := path.Join(absoluteConfigDir, name)
+		if _, err := os.Stat(fileName); err == nil {
+			if err := loadConfigFile(fileName, &config); err == nil {
+				return &config, nil
+			} else {
 				return nil, err
 			}
 		}
 	}
 
+	logger.Warn("Read config failed (will use defaults)")
 	return &config, nil
 }

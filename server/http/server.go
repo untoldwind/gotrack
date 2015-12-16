@@ -4,6 +4,7 @@ import (
 	"github.com/go-errors/errors"
 	"github.com/untoldwind/gotrack/server/config"
 	"github.com/untoldwind/gotrack/server/logging"
+	"github.com/untoldwind/gotrack/server/store"
 	"github.com/untoldwind/routing"
 	"net"
 	"net/http"
@@ -11,13 +12,15 @@ import (
 
 type Server struct {
 	config   *config.ServerConfig
+	store    store.Store
 	listener net.Listener
 	logger   logging.Logger
 }
 
-func NewServer(config *config.ServerConfig, parent logging.Logger) *Server {
+func NewServer(config *config.ServerConfig, store store.Store, parent logging.Logger) *Server {
 	return &Server{
 		config: config,
+		store:  store,
 		logger: parent.WithContext(map[string]interface{}{"package": "http"}),
 	}
 }
@@ -52,6 +55,7 @@ func (s *Server) Stop() {
 func (s *Server) routeHandler() http.Handler {
 	return routing.NewRouteHandler(
 		routing.PrefixSeq("/v1",
+			DataRoutes(s.store, s.logger),
 			InternalRoutes(s.logger),
 		),
 		SendError(s.logger, NotFound()),

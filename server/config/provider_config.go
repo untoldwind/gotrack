@@ -5,6 +5,7 @@ type ProviderConfig struct {
 	ConntrackFile string `json:"proc_file" yaml:"proc_file"`
 	DevFile       string `json:"dev_file" yaml:"dev_file"`
 	WanInterface  string `json:"wan_interface" yaml:"wan_interface"`
+	LanInterface  string `json:"lan_interface" yaml:"lan_interface"`
 }
 
 func newProviderConfig() *ProviderConfig {
@@ -13,15 +14,6 @@ func newProviderConfig() *ProviderConfig {
 		ConntrackFile: "/proc/net/ip_conntrack",
 		DevFile:       "/proc/net/dev",
 		WanInterface:  "eth0",
+		LanInterface:  "eth1",
 	}
-}
-
-func readProviderConfig(fileName string) (*ProviderConfig, error) {
-	var providerConfig ProviderConfig
-
-	if err := loadConfigFile(fileName, &providerConfig); err != nil {
-		return nil, err
-	}
-
-	return &providerConfig, nil
 }

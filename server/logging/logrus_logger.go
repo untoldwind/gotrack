@@ -7,8 +7,11 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/Sirupsen/logrus/formatters/logstash"
+	"github.com/Sirupsen/logrus/hooks/syslog"
 	"github.com/codegangsta/cli"
 	"github.com/go-errors/errors"
+	"io/ioutil"
+	"log/syslog"
 )
 
 type logrusLogger struct {
@@ -17,6 +20,18 @@ type logrusLogger struct {
 }
 
 func NewLogrusLogger(ctx *cli.Context) Logger {
+	defaultFormat := &logrus.TextFormatter{}
+	if ctx.GlobalBool("log-syslog") {
+		hook, err := logrus_syslog.NewSyslogHook("", "", syslog.LOG_DEBUG, "")
+		if err != nil {
+			logrus.Error("Unable to connect to local syslog daemon")
+		} else {
+			logrus.AddHook(hook)
+		}
+		defaultFormat.DisableColors = true
+		defaultFormat.FullTimestamp = true
+		logrus.SetOutput(ioutil.Discard)
+	}
 	logFile := ctx.GlobalString("log-file")
 	if logFile != "" {
 		if err := os.MkdirAll(path.Dir(logFile), 0755); err != nil {
@@ -36,7 +51,7 @@ func NewLogrusLogger(ctx *cli.Context) Logger {
 	case "logstash":
 		logrus.SetFormatter(&logstash.LogstashFormatter{})
 	default:
-		logrus.SetFormatter(&logrus.TextFormatter{})
+		logrus.SetFormatter(defaultFormat)
 	}
 	if ctx.GlobalBool("debug") {
 		logrus.SetLevel(logrus.DebugLevel)
