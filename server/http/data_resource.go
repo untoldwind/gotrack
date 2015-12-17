@@ -20,14 +20,26 @@ func DataRoutes(store store.Store, parent logging.Logger) routing.Matcher {
 	}
 	return routing.PrefixSeq("/data",
 		routing.PrefixSeq("/totals",
-			routing.EndSeq(
-				routing.GETFunc(wrap(resource.logger, resource.Totals)),
-				SendError(logger, MethodNotAllowed()),
+			routing.PrefixSeq("/span",
+				routing.EndSeq(
+					routing.GETFunc(wrap(resource.logger, resource.TotalsSpan)),
+					SendError(logger, MethodNotAllowed()),
+				),
+			),
+			routing.PrefixSeq("/rates",
+				routing.EndSeq(
+					routing.GETFunc(wrap(resource.logger, resource.TotalsRates)),
+					SendError(logger, MethodNotAllowed()),
+				),
 			),
 		),
 	)
 }
 
-func (r *dataResource) Totals(req *http.Request) (interface{}, error) {
-	return r.store.Totals(), nil
+func (r *dataResource) TotalsSpan(req *http.Request) (interface{}, error) {
+	return r.store.TotalsSpan(), nil
+}
+
+func (r *dataResource) TotalsRates(req *http.Request) (interface{}, error) {
+	return r.store.TotalsRates(), nil
 }

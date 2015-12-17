@@ -8,7 +8,8 @@ import (
 )
 
 type Store interface {
-	Totals() *Span
+	TotalsSpan() *Span
+	TotalsRates() *Rates
 	Stop()
 }
 
