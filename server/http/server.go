@@ -57,7 +57,8 @@ func (s *Server) routeHandler() http.Handler {
 		routing.PrefixSeq("/v1",
 			DataRoutes(s.store, s.logger),
 			InternalRoutes(s.logger),
+			SendError(s.logger, NotFound()),
 		),
-		SendError(s.logger, NotFound()),
+		routing.Any(http.FileServer(http.Dir(s.config.UiDir))),
 	)
 }

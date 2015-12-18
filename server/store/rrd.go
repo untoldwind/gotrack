@@ -82,7 +82,7 @@ func (r *rrd) getSpan() *Span {
 func (r *rrd) getRate(offset int64) Entry {
 	var result Entry
 
-	if offset > 0 && r.last >= r.start + offset {
+	if offset > 0 && r.last >= r.start+offset {
 		idx1 := (r.last / r.step) % r.size
 		idx2 := ((r.last - offset) / r.step) % r.size
 		result = r.entries[idx2].delta(r.entries[idx1])

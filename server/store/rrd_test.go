@@ -113,9 +113,9 @@ func TestProcProvider(t *testing.T) {
 					}
 					for i := 2000; i < 299; i++ {
 						if span.Deltas[i].BytesIn != 1000 ||
-						span.Deltas[i].PacketsIn != 100 ||
-						span.Deltas[i].BytesOut != 2000 ||
-						span.Deltas[i].PacketsOut != 200 {
+							span.Deltas[i].PacketsIn != 100 ||
+							span.Deltas[i].BytesOut != 2000 ||
+							span.Deltas[i].PacketsOut != 200 {
 							t.Fail()
 						}
 					}
