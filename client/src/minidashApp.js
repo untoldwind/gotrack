@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from "react-dom"
 import Transmit from "react-transmit"
 
 import MiniDashboard from './components/MiniDashboard'
