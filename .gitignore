@@ -11,6 +11,7 @@ bin/
 client/*.log
 client/dist/
 client/node_modules/
+client/minidash-app/node_modules/
 
 # Architecture specific extensions/prefixes
 *.[568vq]

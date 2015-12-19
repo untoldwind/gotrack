@@ -1,0 +1,8 @@
+{
+  "name": "gotrack-minidash",
+  "version": "0.1.0",
+  "main": "main.js",
+  "dependencies": {
+    "minimist": "^1.2.0"
+  }
+}
