@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	Server   *ServerConfig   `json:"server" yaml:"server"`
-	Provider *ProviderConfig `json:"provider" yaml:"provider"`
-	Store    *StoreConfig    `json:"store" yaml:"store"`
+	Server     *ServerConfig   `json:"server" yaml:"server"`
+	Conntrack  *ContrackConfig `json:"conntrack" yaml:"conntrack"`
+	DhcpConfig *DhcpConfig     `json:"dhcp" yaml:"dhcp"`
+	Store      *StoreConfig    `json:"store" yaml:"store"`
 }
 
 func NewConfig(configDir string, logger logging.Logger) (*Config, error) {
@@ -20,9 +21,10 @@ func NewConfig(configDir string, logger logging.Logger) (*Config, error) {
 	}
 
 	config := Config{
-		Server:   newServerConfig(),
-		Provider: newProviderConfig(),
-		Store:    newStoreConfig(),
+		Server:     newServerConfig(),
+		Conntrack:  newConntrackConfig(),
+		DhcpConfig: newDhcpConfig(),
+		Store:      newStoreConfig(),
 	}
 
 	for _, name := range []string{"config.json", "config.yaml"} {

@@ -3,30 +3,40 @@ package store
 import (
 	"github.com/untoldwind/gotrack/server/config"
 	"github.com/untoldwind/gotrack/server/conntrack"
+	"github.com/untoldwind/gotrack/server/dhcp"
 	"github.com/untoldwind/gotrack/server/logging"
-	"sync"
 	"time"
 )
 
 type memoryStore struct {
-	lock       sync.RWMutex
-	provider   conntrack.Provider
-	totals5Min *rrd
-	ticker     *time.Ticker
-	logger     logging.Logger
+	conntrackProvider conntrack.Provider
+	dhcpProvider      dhcp.Provider
+	devices           *memoryDevices
+	totals5Min        *rrd
+	dhcpTicker        *time.Ticker
+	totalsTicker      *time.Ticker
+	logger            logging.Logger
 }
 
-func newMemoryStore(config *config.StoreConfig, provider conntrack.Provider, parent logging.Logger) (*memoryStore, error) {
+func newMemoryStore(config *config.StoreConfig, conntrackProvider conntrack.Provider, dhcpProvider dhcp.Provider, parent logging.Logger) (*memoryStore, error) {
 	store := &memoryStore{
-		provider:   provider,
-		totals5Min: newRRD(time.Now(), 300, 1),
-		ticker:     time.NewTicker(1 * time.Second),
-		logger:     parent.WithContext(map[string]interface{}{"package": "store"}),
+		conntrackProvider: conntrackProvider,
+		dhcpProvider:      dhcpProvider,
+		devices:           newMemoryDevices(),
+		totals5Min:        newRRD(time.Now(), 300, 1),
+		dhcpTicker:        time.NewTicker(10 * time.Second),
+		totalsTicker:      time.NewTicker(1 * time.Second),
+		logger:            parent.WithContext(map[string]interface{}{"package": "store"}),
 	}
 
-	go store.pollData()
+	go store.pollDhcp()
+	go store.pollTotals()
 
 	return store, nil
+}
+
+func (s *memoryStore) Devices() []*Device {
+	return s.devices.getDevices()
 }
 
 func (s *memoryStore) TotalsSpan() *Span {
@@ -40,12 +50,24 @@ func (s *memoryStore) TotalsRates() *Rates {
 }
 
 func (s *memoryStore) Stop() {
-	s.ticker.Stop()
+	s.dhcpTicker.Stop()
+	s.totalsTicker.Stop()
 }
 
-func (s *memoryStore) pollData() {
-	for time := range s.ticker.C {
-		if totals, err := s.provider.Totals(); err == nil {
+func (s *memoryStore) pollDhcp() {
+	for _ = range s.dhcpTicker.C {
+		if leases, err := s.dhcpProvider.Leases(); err == nil {
+			s.logger.Debugf("Updating leases: %v", leases)
+			s.devices.update(leases)
+		} else {
+			s.logger.Warn("Failed to get leases: %v", err)
+		}
+	}
+}
+
+func (s *memoryStore) pollTotals() {
+	for time := range s.totalsTicker.C {
+		if totals, err := s.conntrackProvider.Totals(); err == nil {
 			s.logger.Debugf("Updating totals: %v", totals)
 			s.totals5Min.addTotals(time, &totals.Receive, &totals.Send)
 		} else {

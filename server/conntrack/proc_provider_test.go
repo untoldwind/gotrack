@@ -9,7 +9,7 @@ import (
 
 func TestProcProvider(t *testing.T) {
 	Convey("Given a provider with test files", t, func() {
-		config := &config.ProviderConfig{
+		config := &config.ContrackConfig{
 			Type:          "proc",
 			ConntrackFile: "_procfile_example",
 			DevFile:       "_dev_example",

@@ -1,6 +1,6 @@
 package config
 
-type ProviderConfig struct {
+type ContrackConfig struct {
 	Type          string `json:"type" yaml:"type"`
 	ConntrackFile string `json:"proc_file" yaml:"proc_file"`
 	DevFile       string `json:"dev_file" yaml:"dev_file"`
@@ -8,8 +8,8 @@ type ProviderConfig struct {
 	LanInterface  string `json:"lan_interface" yaml:"lan_interface"`
 }
 
-func newProviderConfig() *ProviderConfig {
-	return &ProviderConfig{
+func newConntrackConfig() *ContrackConfig {
+	return &ContrackConfig{
 		Type:          "proc",
 		ConntrackFile: "/proc/net/ip_conntrack",
 		DevFile:       "/proc/net/dev",

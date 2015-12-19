@@ -1,4 +1,4 @@
-package conntrack
+package dhcp
 
 import (
 	"github.com/go-errors/errors"
@@ -7,15 +7,13 @@ import (
 )
 
 type Provider interface {
-	Totals() (*Totals, error)
-
-	Records() ([]*Record, error)
+	Leases() ([]Lease, error)
 }
 
-func NewProvider(config *config.ContrackConfig, parent logging.Logger) (Provider, error) {
+func NewProvider(config *config.DhcpConfig, parent logging.Logger) (Provider, error) {
 	switch config.Type {
-	case "proc":
-		return newProcProvider(config, parent)
+	case "dnsmasq":
+		return newDnsmasqProvider(config, parent)
 	default:
 		return nil, errors.Errorf("Unknown provider type: %s", config.Type)
 	}

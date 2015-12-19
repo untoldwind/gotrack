@@ -11,11 +11,11 @@ import (
 )
 
 type procProvider struct {
-	config *config.ProviderConfig
+	config *config.ContrackConfig
 	logger logging.Logger
 }
 
-func newProcProvider(config *config.ProviderConfig, parent logging.Logger) (*procProvider, error) {
+func newProcProvider(config *config.ContrackConfig, parent logging.Logger) (*procProvider, error) {
 	return &procProvider{
 		config: config,
 		logger: parent.WithContext(map[string]interface{}{"package": "conntrack"}),

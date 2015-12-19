@@ -56,6 +56,7 @@ func (s *Server) routeHandler() http.Handler {
 	return routing.NewRouteHandler(
 		routing.PrefixSeq("/v1",
 			DataRoutes(s.store, s.logger),
+			DeviceRoutes(s.store, s.logger),
 			InternalRoutes(s.logger),
 			SendError(s.logger, NotFound()),
 		),

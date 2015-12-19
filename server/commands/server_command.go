@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/codegangsta/cli"
 	"github.com/untoldwind/gotrack/server/conntrack"
+	"github.com/untoldwind/gotrack/server/dhcp"
 	"github.com/untoldwind/gotrack/server/http"
 	"github.com/untoldwind/gotrack/server/store"
 )
@@ -14,13 +15,19 @@ var ServerCommand = cli.Command{
 }
 
 func serverCommand(ctx *cli.Context, runCtx *runContext) {
-	provider, err := conntrack.NewProvider(runCtx.config.Provider, runCtx.logger)
+	conntrackProvider, err := conntrack.NewProvider(runCtx.config.Conntrack, runCtx.logger)
 	if err != nil {
 		runCtx.logger.ErrorErr(err)
 		return
 	}
 
-	store, err := store.NewStore(runCtx.config.Store, provider, runCtx.logger)
+	dhcpProvider, err := dhcp.NewProvider(runCtx.config.DhcpConfig, runCtx.logger)
+	if err != nil {
+		runCtx.logger.ErrorErr(err)
+		return
+	}
+
+	store, err := store.NewStore(runCtx.config.Store, conntrackProvider, dhcpProvider, runCtx.logger)
 	if err != nil {
 		runCtx.logger.ErrorErr(err)
 		return
