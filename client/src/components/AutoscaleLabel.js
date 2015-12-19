@@ -3,12 +3,16 @@ import ReactDOM from "react-dom"
 
 import {throttle} from '../utils/dash'
 
-export default class Rescale extends React.Component {
+export default class AutoscaleLabel extends React.Component {
     static propTypes = {
+        outerClassName: React.PropTypes.string,
+        innerClassName: React.PropTypes.string,
+        text: React.PropTypes.string,
         style: React.PropTypes.object.isRequired
     }
 
     static defaultProps = {
+        outerClassName: "autoscale",
         style: {
             top: "0px",
             bottom: "0px",
@@ -41,31 +45,27 @@ export default class Rescale extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         const outerStyle = Object.assign({}, this.props.style)
-        const child = React.cloneElement(React.Children.only(this.props.children), {
+        const innerStyle = {
             fontSize: this.state.fontSize,
-            totalHeight: this.state.height,
-            ref: "inner"
-        })
+            lineHeight: this.state.height + "px"
+        }
         return (
-            <div className="rescale" style={outerStyle} ref="outer">
-                {child}
+            <div className={this.props.outerClassName} style={outerStyle} ref="outer">
+                <span className={this.props.innerClassName} style={innerStyle} ref="inner">{this.props.text}</span>
             </div>
         )
     }
 
     rescale() {
         const outer = this.refs.outer
-        const inner = ReactDOM.findDOMNode(this.refs.inner)
+        const inner = this.refs.inner
 
         if (outer.offsetHeight !== this.state.height) {
             this.setState({
                 height: outer.offsetHeight
             })
         } else {
-            console.log(outer.offsetWidth)
-            console.log(inner.offsetWidth)
             const newFontsizeW = Math.floor(this.state.fontSize * outer.offsetWidth / inner.offsetWidth)
             const newFontsizeH = Math.floor(this.state.fontSize * outer.offsetHeight / inner.offsetHeight)
 

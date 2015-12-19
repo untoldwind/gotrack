@@ -3,7 +3,6 @@ import Transmit from "react-transmit"
 
 import * as totals from '../backends/totals'
 
-import Rescale from './Rescale'
 import RateLabel from './RateLabel'
 
 class MiniDashboard extends React.Component {
@@ -22,15 +21,16 @@ class MiniDashboard extends React.Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <div style={{position: "absolute", left: 0, right: 0, top: 0, bottom: 0}}>
-                <Rescale style={{left: 0, top: 0, height: "100%", width: "50%"}}>
-                    <RateLabel title="In" className="rate-in" rate={this.props.totalRates.rate_5sec.bytes_in}/>
-                </Rescale>
-                <Rescale style={{right: 0, top: 0, height: "100%", width: "50%"}}>
-                    <RateLabel title="Out" className="rate-out" rate={this.props.totalRates.rate_5sec.bytes_out}/>
-                </Rescale>
+                <RateLabel title="IN"
+                           className="rate-in"
+                           style={{left: 0, top: 0, height: "100%", width: "50%"}}
+                           rate={this.props.totalRates.rate_5sec.bytes_in}/>
+                <RateLabel title="OUT"
+                           className="rate-out"
+                           style={{right: 0, top: 0, height: "100%", width: "50%"}}
+                           rate={this.props.totalRates.rate_5sec.bytes_out}/>
             </div>
         )
     }
