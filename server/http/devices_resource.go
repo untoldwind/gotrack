@@ -19,6 +19,12 @@ func DeviceRoutes(store store.Store, parent logging.Logger) routing.Matcher {
 		logger: logger,
 	}
 	return routing.PrefixSeq("/devices",
+		routing.StringPart(func(deviceIp string) routing.Matcher {
+			return routing.EndSeq(
+				routing.GETFunc(wrap(resource.logger, resource.GetDeviceDetails(deviceIp))),
+				SendError(logger, MethodNotAllowed()),
+			)
+		}),
 		routing.EndSeq(
 			routing.GETFunc(wrap(resource.logger, resource.GetDevices)),
 			SendError(logger, MethodNotAllowed()),
@@ -28,4 +34,14 @@ func DeviceRoutes(store store.Store, parent logging.Logger) routing.Matcher {
 
 func (r *devicesResource) GetDevices(req *http.Request) (interface{}, error) {
 	return r.store.Devices(), nil
+}
+
+func (r *devicesResource) GetDeviceDetails(deviceIp string) func(req *http.Request) (interface{}, error) {
+	return func(req *http.Request) (interface{}, error) {
+		deviceDetails := r.store.DeviceDetails(deviceIp)
+		if deviceDetails == nil {
+			return nil, NotFound()
+		}
+		return deviceDetails, nil
+	}
 }

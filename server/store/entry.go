@@ -23,6 +23,13 @@ func (e *Entry) maxOf(other Entry) {
 	e.PacketsOut = uintMax(e.PacketsOut, other.PacketsOut)
 }
 
+func (e *Entry) add(entry Entry) {
+	e.BytesIn += entry.BytesIn
+	e.PacketsIn += entry.PacketsIn
+	e.BytesOut += entry.BytesOut
+	e.PacketsOut += entry.PacketsOut
+}
+
 func (e *Entry) div(div uint64) {
 	e.BytesIn /= div
 	e.PacketsIn /= div

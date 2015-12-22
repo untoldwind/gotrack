@@ -1,6 +1,9 @@
 package conntrack
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/binary"
 	"github.com/go-errors/errors"
 	"strconv"
 	"strings"
@@ -8,9 +11,9 @@ import (
 
 type Connection struct {
 	Transfer
-	Src     string `json:"src"`
+	SrcIp   string `json:"src_ip"`
 	SrcPort uint16 `json:"src_port"`
-	Dst     string `json:"destination"`
+	DstIp   string `json:"dst_ip"`
 	DstPort uint16 `json:"dst_port"`
 }
 
@@ -22,6 +25,7 @@ type Record struct {
 	State    string     `json:"state"`
 	Send     Connection `json:"send"`
 	Receive  Connection `json:"receive"`
+	Key      string     `json:"key"`
 }
 
 func parseRecord(line string) (*Record, error) {
@@ -31,7 +35,10 @@ func parseRecord(line string) (*Record, error) {
 		return nil, errors.Errorf("Invalid conntrack recod: %s", line)
 	}
 
+	hash := sha256.New()
 	protocol := fields[0]
+
+	hash.Write([]byte(protocol))
 
 	ttl, err := strconv.ParseUint(fields[2], 10, 64)
 	if err != nil {
@@ -50,6 +57,13 @@ func parseRecord(line string) (*Record, error) {
 	if err != nil {
 		return nil, err
 	}
+	buffer := make([]byte, 2)
+	hash.Write([]byte(sendConnection.SrcIp))
+	binary.LittleEndian.PutUint16(buffer, sendConnection.SrcPort)
+	hash.Write(buffer)
+	hash.Write([]byte(sendConnection.DstIp))
+	binary.LittleEndian.PutUint16(buffer, sendConnection.DstPort)
+	hash.Write(buffer)
 
 	receiveConnection, _, err := parseConnection(fields)
 	if err != nil {
@@ -62,6 +76,7 @@ func parseRecord(line string) (*Record, error) {
 		State:    state,
 		Send:     *sendConnection,
 		Receive:  *receiveConnection,
+		Key:      base64.RawStdEncoding.EncodeToString(hash.Sum(nil)),
 	}
 	return result, nil
 }
@@ -82,12 +97,12 @@ func parseConnection(fields []string) (*Connection, []string, error) {
 			if idx >= 4 {
 				return result, fields[idx:], nil
 			}
-			result.Src = field[sep+1:]
+			result.SrcIp = field[sep+1:]
 		case "dst":
 			if idx >= 4 {
 				return result, fields[idx:], nil
 			}
-			result.Dst = field[sep+1:]
+			result.DstIp = field[sep+1:]
 		case "sport":
 			if idx >= 4 {
 				return result, fields[idx:], nil

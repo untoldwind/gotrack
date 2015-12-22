@@ -5,7 +5,6 @@ type ContrackConfig struct {
 	ConntrackFile string `json:"proc_file" yaml:"proc_file"`
 	DevFile       string `json:"dev_file" yaml:"dev_file"`
 	WanInterface  string `json:"wan_interface" yaml:"wan_interface"`
-	LanInterface  string `json:"lan_interface" yaml:"lan_interface"`
 }
 
 func newConntrackConfig() *ContrackConfig {
@@ -14,6 +13,5 @@ func newConntrackConfig() *ContrackConfig {
 		ConntrackFile: "/proc/net/ip_conntrack",
 		DevFile:       "/proc/net/dev",
 		WanInterface:  "eth0",
-		LanInterface:  "eth1",
 	}
 }
