@@ -1,4 +1,5 @@
 import React from 'react'
+import history from '../utils/history'
 
 export default class DeviceList extends React.Component {
     constructor(props) {
@@ -11,7 +12,7 @@ export default class DeviceList extends React.Component {
         const sorted = this.props.data.sort(this.sortFunction())
         const rows = sorted.map((device) => {
             return (
-                <tr key={device.ip_address}>
+                <tr key={device.ip_address} onClick={this.showDetails(device.ip_address)}>
                     <td>{device.name}</td>
                     <td>{device.ip_address}</td>
                     <td>{device.mac_address}</td>
@@ -28,7 +29,7 @@ export default class DeviceList extends React.Component {
                     <th onClick={this.switchSort("name")}>Name {this.sortMarker("name")}</th>
                     <th onClick={this.switchSort("ip_address")}>IP {this.sortMarker("ip_address")}</th>
                     <th onClick={this.switchSort("mac_address")}>MAC {this.sortMarker("mac_address")}</th>
-                    <th>Connections</th>
+                    <th># conns</th>
                     <th className="rate-in">In (b/s)</th>
                     <th className="rate-out">Out (b/s)</th>
                 </tr>
@@ -68,6 +69,12 @@ export default class DeviceList extends React.Component {
             } else {
                 this.setState({sortField: field, sortAsc: true})
             }
+        }
+    }
+
+    showDetails(ip_address) {
+        return () => {
+            history.pushState(null, "/devices/" + ip_address)
         }
     }
 }

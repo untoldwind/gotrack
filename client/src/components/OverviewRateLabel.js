@@ -1,5 +1,7 @@
 import React from 'react'
 
+import {formatRate} from './formats'
+
 export default class OverviewRateLabel extends React.Component {
     static propTypes = {
         title: React.PropTypes.string.isRequired,
@@ -12,23 +14,13 @@ export default class OverviewRateLabel extends React.Component {
     }
 
     render() {
-        const rate = this.props.rate
-        var value  = rate.toString()
-        var unit   = "bytes/s"
-
-        if (rate >= 100 * 1024) {
-            value = (rate / 1024.0 / 1024.0).toFixed(2)
-            unit  = "MB/s"
-        } else if (rate >= 100) {
-            value = (rate / 1024.0).toFixed(2)
-            unit  = "kB/s"
-        }
+        const {value, unit} = formatRate(this.props.rate)
 
         return (
             <div className="panel panel-default">
                 <div className="panel-body">
-                    <div className={"col-xs-3 rate-title " + this.props.className}>{this.props.title}</div>
-                    <div className={"col-xs-6 rate-value " + this.props.className}>{value}</div>
+                    <div className={"col-xs-2 rate-title " + this.props.className}>{this.props.title}</div>
+                    <div className={"col-xs-7 rate-value " + this.props.className}>{value}</div>
                     <div className={"col-xs-3 rate-unit " + this.props.className}>{unit}</div>
                 </div>
             </div>

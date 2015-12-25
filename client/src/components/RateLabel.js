@@ -2,6 +2,7 @@ import React from 'react'
 import AutoscaleLabel from './AutoscaleLabel'
 
 import shallowEqual from '../utils/shallowEqual'
+import {formatRate} from './formats'
 
 export default class RateLabel extends React.Component {
     static propTypes = {
@@ -25,17 +26,7 @@ export default class RateLabel extends React.Component {
     }
 
     render() {
-        const rate = this.props.rate
-        var value = rate.toString()
-        var unit = "bytes/s"
-
-        if (rate >= 100 * 1024) {
-            value = (rate / 1024.0 / 1024.0).toFixed(2)
-            unit = "MB/s"
-        } else if (rate >= 100) {
-            value = (rate / 1024.0).toFixed(2)
-            unit = "kB/s"
-        }
+        const {value, unit} = formatRate(this.props.rate)
 
         return (
             <div className={this.props.className} style={this.props.style}>
