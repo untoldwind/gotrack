@@ -14,7 +14,7 @@ export default class Overview extends React.Component {
                     <OverviewRates/>
                 </Fetcher>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-xs-12">
                         <div className="panel panel-default">
                             <div className="panel-body">
                                 <Fetcher fetcher={devices.getDevices}>

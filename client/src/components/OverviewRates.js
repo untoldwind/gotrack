@@ -16,10 +16,10 @@ export default class OverviewRates extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-xs-6">
                     <OverviewRateLabel className="rate-in" title="In" rate={this.props.data.rate_5sec.bytes_in}/>
                 </div>
-                <div className="col-md-6">
+                <div className="col-xs-6">
                     <OverviewRateLabel className="rate-out" title="Out" rate={this.props.data.rate_5sec.bytes_out}/>
                 </div>
             </div>

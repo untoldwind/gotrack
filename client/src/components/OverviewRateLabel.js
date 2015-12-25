@@ -27,9 +27,9 @@ export default class OverviewRateLabel extends React.Component {
         return (
             <div className="panel panel-default">
                 <div className="panel-body">
-                    <div className={"col-md-3 rate-title " + this.props.className}>{this.props.title}</div>
-                    <div className={"col-md-6 rate-value " + this.props.className}>{value}</div>
-                    <div className={"col-md-3 rate-unit " + this.props.className}>{unit}</div>
+                    <div className={"col-xs-3 rate-title " + this.props.className}>{this.props.title}</div>
+                    <div className={"col-xs-6 rate-value " + this.props.className}>{value}</div>
+                    <div className={"col-xs-3 rate-unit " + this.props.className}>{unit}</div>
                 </div>
             </div>
         )
