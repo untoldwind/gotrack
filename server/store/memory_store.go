@@ -69,10 +69,10 @@ func (s *memoryStore) Stop() {
 }
 
 func (s *memoryStore) pollConntrack() {
-	for _ = range s.conntrackTicker.C {
+	for time := range s.conntrackTicker.C {
 		if records, err := s.conntrackProvider.Records(); err == nil {
 			s.logger.Debugf("Update conntrack records: %v", records)
-			s.devices.updateConntrackRecords(records)
+			s.devices.updateConntrackRecords(time, records)
 		} else {
 			s.logger.Warn("Failed to get conntrack records: %v", err)
 		}

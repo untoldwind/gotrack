@@ -6,6 +6,7 @@ import (
 	"github.com/untoldwind/gotrack/server/dhcp"
 	"net"
 	"sync"
+	"time"
 )
 
 type memoryDevices struct {
@@ -27,7 +28,7 @@ func newMemoryDevices(config *config.StoreConfig) (*memoryDevices, error) {
 	}, nil
 }
 
-func (d *memoryDevices) updateConntrackRecords(records []*conntrack.Record) {
+func (d *memoryDevices) updateConntrackRecords(time time.Time, records []*conntrack.Record) {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 
@@ -46,7 +47,7 @@ func (d *memoryDevices) updateConntrackRecords(records []*conntrack.Record) {
 		}
 	}
 	for _, device := range d.devices {
-		device.cleanupConnections(keys)
+		device.cleanupConnections(time, keys)
 	}
 }
 
@@ -58,6 +59,7 @@ func (d *memoryDevices) updateLeases(leases []dhcp.Lease) {
 		if device, ok := d.devices[lease.IpAddress]; ok {
 			device.name = lease.Name
 			device.ipAddress = lease.IpAddress
+			device.macAddress = lease.MacAddress
 		} else {
 			d.devices[lease.IpAddress] = newMemoryDevice(lease.Name, lease.IpAddress, lease.MacAddress)
 		}

@@ -1,0 +1,42 @@
+@import "~bootstrap-less/bootstrap/bootstrap.less";
+@import "./theme.less";
+
+html, body {
+  height: 100%;
+}
+
+#app {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -20px;
+  /* Pad bottom by footer height */
+  padding: 0 0 20px;
+}
+
+#footer {
+  height: 20px;
+  background-color: @gray-darker;
+}
+
+.rate-in {
+  color: green;
+}
+
+.rate-out {
+  color: red;
+}
+
+.rate-title {
+  line-height: 64px;
+}
+
+.rate-unit {
+  line-height: 64px;
+}
+
+.rate-value {
+  font-size: 64px;
+  text-align: center;
+  line-height: 1;
+}

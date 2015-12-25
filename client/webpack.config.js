@@ -33,6 +33,7 @@ if (DEBUG) {
 module.exports = {
     target: 'web',
     entry: {
+        main: path.join(__dirname, 'src', 'main'),
         minidash: path.join(__dirname, 'src', 'minidash')
     },
     output: {

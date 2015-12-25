@@ -10,6 +10,7 @@ type memoryDevice struct {
 	ipAddress   string
 	macAddress  string
 	totals5Min  *rrd
+	totals      Entry
 	baseTotals  Entry
 	connections map[string]*Connection
 }
@@ -42,13 +43,16 @@ func (d *memoryDevice) updateConnections(record *conntrack.Record) {
 	connection.Totals.PacketsOut = record.Send.Packets
 }
 
-func (d *memoryDevice) cleanupConnections(activeConnections map[string]bool) {
+func (d *memoryDevice) cleanupConnections(time time.Time, activeConnections map[string]bool) {
+	d.totals = d.baseTotals
 	for key, connection := range d.connections {
+		d.totals.add(connection.Totals)
 		if !activeConnections[key] {
 			d.baseTotals.add(connection.Totals)
 			delete(d.connections, key)
 		}
 	}
+	d.totals5Min.addEntry(time, d.totals)
 }
 
 func (d *memoryDevice) toDevice() *Device {
@@ -57,6 +61,8 @@ func (d *memoryDevice) toDevice() *Device {
 		IpAddress:       d.ipAddress,
 		MacAddress:      d.macAddress,
 		ConnectionCount: len(d.connections),
+		Totals:          d.totals,
+		Rate5Sec:        d.totals5Min.getRate(5),
 	}
 }
 

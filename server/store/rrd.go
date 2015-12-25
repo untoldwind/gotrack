@@ -31,24 +31,28 @@ func newRRD(start time.Time, span, step int64) *rrd {
 	}
 }
 
-func (r *rrd) addTotals(time time.Time, in, out *conntrack.Transfer) {
+func (r *rrd) addEntry(time time.Time, entry Entry) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
 	now := time.Unix()
 	idx := (now / r.step) % r.size
-	r.entries[idx] = Entry{
-		BytesIn:    in.Bytes,
-		PacketsIn:  in.Packets,
-		BytesOut:   out.Bytes,
-		PacketsOut: out.Packets,
-	}
+	r.entries[idx] = entry
 	if now >= r.end {
 		now -= now % r.step
 		r.end = now + r.step
 		r.start = r.end - r.step*r.size
 	}
 	r.last = now
+}
+
+func (r *rrd) addTotals(time time.Time, in, out *conntrack.Transfer) {
+	r.addEntry(time, Entry{
+		BytesIn:    in.Bytes,
+		PacketsIn:  in.Packets,
+		BytesOut:   out.Bytes,
+		PacketsOut: out.Packets,
+	})
 }
 
 func (r *rrd) getSpan() *Span {

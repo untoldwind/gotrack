@@ -1,15 +1,19 @@
 import React from 'react'
-import Transmit from "react-transmit"
-
+import ReactDOM from 'react-dom'
+import Fetcher from './components/Fetcher'
 import MiniDashboard from './components/MiniDashboard'
+
+import * as totals from './backends/totals'
 
 class MinidashApp extends React.Component {
     render() {
         return (
-            <MiniDashboard/>
+            <Fetcher fetcher={totals.getRates}>
+                <MiniDashboard/>
+            </Fetcher>
         )
     }
 }
 
 const appRoot = window.document.getElementById("app")
-Transmit.render(MinidashApp, {}, appRoot)
+ReactDOM.render(<MinidashApp/>, appRoot)
