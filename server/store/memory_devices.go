@@ -86,3 +86,13 @@ func (d *memoryDevices) getDeviceDetails(deviceIp string) *DeviceDetails {
 	}
 	return nil
 }
+
+func (d *memoryDevices) getDeviceSpan(deviceIp string) *Span {
+	d.lock.RLock()
+	defer d.lock.RUnlock()
+
+	if device, ok := d.devices[deviceIp]; ok {
+		return device.getSpan()
+	}
+	return nil
+}

@@ -31,9 +31,9 @@ func (d *memoryDevice) updateConnections(record *conntrack.Record) {
 	if !ok {
 		connection = &Connection{
 			Protocol: record.Protocol,
-			SrcIp:    record.Send.SrcPort,
+			SrcPort:  record.Send.SrcPort,
 			DestHost: record.Send.DstIp,
-			DestIp:   record.Send.DstPort,
+			DestPort: record.Send.DstPort,
 		}
 		d.connections[record.Key] = connection
 	}
@@ -76,4 +76,8 @@ func (d *memoryDevice) toDeviceDetails() *DeviceDetails {
 		Device:      *d.toDevice(),
 		Connections: connections,
 	}
+}
+
+func (d *memoryDevice) getSpan() *Span {
+	return d.totals5Min.getSpan()
 }

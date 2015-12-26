@@ -67,10 +67,10 @@ export default class SpanGraph extends React.Component {
         return (
             <ReactART.Surface ref="surface" width={width} height={height} style={{backgroundColor: "black"}}>
                 <ReactART.Group>
-                    <ReactART.Shape fill={new ReactART.LinearGradient(['#400', '#000'], 0, height/2, 0, 0)} d={upperRect}/>
-                    <ReactART.Shape fill={new ReactART.LinearGradient(['#040', '#000'], 0, height/2, 0, height)} d={lowerRect}/>
-                    <ReactART.Shape fill="#f00" d={inGraph}/>
-                    <ReactART.Shape fill="#0f0" d={outGraph}/>
+                    <ReactART.Shape fill={new ReactART.LinearGradient(['#040', '#000'], 0, height/2, 0, 0)} d={upperRect}/>
+                    <ReactART.Shape fill={new ReactART.LinearGradient(['#400', '#000'], 0, height/2, 0, height)} d={lowerRect}/>
+                    <ReactART.Shape fill="#0f0" d={inGraph}/>
+                    <ReactART.Shape fill="#f00" d={outGraph}/>
                     <ReactART.Shape stroke="#fff" d={baseLine}/>
                 </ReactART.Group>
             </ReactART.Surface>

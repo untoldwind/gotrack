@@ -52,6 +52,10 @@ func (s *memoryStore) DeviceDetails(deviceIp string) *DeviceDetails {
 	return s.devices.getDeviceDetails(deviceIp)
 }
 
+func (s *memoryStore) DeviceSpan(deviceIp string) *Span {
+	return s.devices.getDeviceSpan(deviceIp)
+}
+
 func (s *memoryStore) TotalsSpan() *Span {
 	return s.totals5Min.getSpan()
 }

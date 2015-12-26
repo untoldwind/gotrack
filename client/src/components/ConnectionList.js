@@ -1,24 +1,25 @@
 import React from 'react'
-import history from '../utils/history'
 
-export default class DeviceList extends React.Component {
+import {formatTotalString} from './formats'
+
+export default class ConnectionList extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {sortField: "name", sortAsc: true}
+        this.state = {sortField: "dst_host", sortAsc: true}
     }
 
     render() {
         const sorted = this.props.data.sort(this.sortFunction())
-        const rows = sorted.map((device, index) => {
+        const rows = sorted.map((connection, index) => {
             return (
-                <tr key={index} onClick={this.showDetails(device.ip_address)}>
-                    <td>{device.name}</td>
-                    <td>{device.ip_address}</td>
-                    <td>{device.mac_address}</td>
-                    <td>{device.connection_count}</td>
-                    <td className="rate-in">{device.rate_5sec.bytes_in}</td>
-                    <td className="rate-out">{device.rate_5sec.bytes_out}</td>
+                <tr key={index}>
+                    <td>{connection.protocol}</td>
+                    <td>{connection.src_port}</td>
+                    <td>{connection.dst_host}</td>
+                    <td>{connection.dst_port}</td>
+                    <td className="rate-in">{formatTotalString(connection.totals.bytes_in)}</td>
+                    <td className="rate-out">{formatTotalString(connection.totals.bytes_out)}</td>
                 </tr>
             )
         })
@@ -26,12 +27,12 @@ export default class DeviceList extends React.Component {
             <table className="table table-hover">
                 <thead>
                 <tr>
-                    <th onClick={this.switchSort("name")}>Name {this.sortMarker("name")}</th>
-                    <th onClick={this.switchSort("ip_address")}>IP {this.sortMarker("ip_address")}</th>
-                    <th onClick={this.switchSort("mac_address")}>MAC {this.sortMarker("mac_address")}</th>
-                    <th onClick={this.switchSort("connection_count")}># conns {this.sortMarker("connection_count")}</th>
-                    <th className="rate-in">In (b/s)</th>
-                    <th className="rate-out">Out (b/s)</th>
+                    <th>Protocol</th>
+                    <th onClick={this.switchSort("src_port")}>Src port {this.sortMarker("src_port")}</th>
+                    <th onClick={this.switchSort("dst_host")}>Dst host {this.sortMarker("dst_host")}</th>
+                    <th>Dst port</th>
+                    <th className="rate-in">In</th>
+                    <th className="rate-out">Out</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,12 +70,6 @@ export default class DeviceList extends React.Component {
             } else {
                 this.setState({sortField: field, sortAsc: true})
             }
-        }
-    }
-
-    showDetails(ip_address) {
-        return () => {
-            history.pushState(null, "/devices/" + ip_address)
         }
     }
 }

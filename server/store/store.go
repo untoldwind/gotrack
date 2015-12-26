@@ -11,6 +11,7 @@ import (
 type Store interface {
 	Devices() []*Device
 	DeviceDetails(deviceIp string) *DeviceDetails
+	DeviceSpan(deviceIp string) *Span
 	TotalsSpan() *Span
 	TotalsRates() *Rates
 	Stop()

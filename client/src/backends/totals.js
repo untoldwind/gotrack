@@ -1,6 +1,6 @@
 
 export function getRates() {
-    return fetch("/v1/data/totals/rates").then((response) => {
+    return fetch("/v1/totals/rates").then((response) => {
         if (response.status >= 400) {
             throw new Error("Bad response from server")
         }
@@ -9,7 +9,7 @@ export function getRates() {
 }
 
 export function getSpan() {
-    return fetch("/v1/data/totals/span").then((response) => {
+    return fetch("/v1/totals/span").then((response) => {
         if (response.status >= 400) {
             throw new Error("Bad response from server")
         }
