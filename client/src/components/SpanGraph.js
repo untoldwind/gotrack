@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import FetchingComponent from './FetchingComponent'
 
 import {throttle} from '../utils/dash'
+import {formatTotalString} from './formats'
 
 export default class SpanGraph extends FetchingComponent {
     static propTypes = {
@@ -34,40 +35,14 @@ export default class SpanGraph extends FetchingComponent {
 
     renderData({max, deltas}) {
         const {width, height} = this.state
-        var inGraph = ReactART.Path()
-
-        if (max.bytes_in > 0) {
-            const maxIn = max.bytes_in
-            const len = deltas.length
-            const graphHeight = height - 10
-
-            inGraph.moveTo(0, height/2)
-            deltas.forEach((delta, index) => {
-                inGraph.
-                    lineTo(index * width / len, (height - delta.bytes_in/maxIn * graphHeight)/2).
-                    lineTo((index + 1) * width / len, (height - delta.bytes_in/maxIn * graphHeight)/2)
-            })
-            inGraph.lineTo(width, height/2)
-        }
-
-        var outGraph = ReactART.Path()
-
-        if (max.bytes_out > 0) {
-            const maxOut = max.bytes_out
-            const len = deltas.length
-            const graphHeight = height - 10
-
-            outGraph.moveTo(0, height/2)
-            deltas.forEach((delta, index) => {
-                outGraph.
-                    lineTo(index * width / len, (height + delta.bytes_out/maxOut * graphHeight)/2).
-                    lineTo((index + 1) * width / len, (height + delta.bytes_out/maxOut * graphHeight)/2)
-            })
-            outGraph.lineTo(width, height/2)
-        }
+        const graphHeight = height - 5
+        const inGraph = this.createGraph(-1, "bytes_in", max, deltas)
+        const outGraph = this.createGraph(1, "bytes_out", max, deltas)
 
         const upperRect = ReactART.Path().moveTo(0, height/2).lineTo(width, height/2).lineTo(width, 0).lineTo(0, 0)
         const lowerRect = ReactART.Path().moveTo(0, height/2).lineTo(width, height/2).lineTo(width, height).lineTo(0, height)
+        const maxInLine = ReactART.Path().moveTo(width * 0.1, height * 0.25).lineTo(width * 0.1 + (height * 0.25), 5).lineTo(width, 5)
+        const maxOutLine = ReactART.Path().moveTo(width * 0.1, height * 0.75).lineTo(width * 0.1 + (graphHeight - height * 0.75), graphHeight).lineTo(width, graphHeight)
         const baseLine = ReactART.Path().moveTo(0, height/2).lineTo(width, height/2)
 
         return (
@@ -77,6 +52,10 @@ export default class SpanGraph extends FetchingComponent {
                     <ReactART.Shape fill={new ReactART.LinearGradient(['#400', '#000'], 0, height/2, 0, height)} d={lowerRect}/>
                     <ReactART.Shape fill="#0f0" d={inGraph}/>
                     <ReactART.Shape fill="#f00" d={outGraph}/>
+                    <ReactART.Shape stroke="#aaa" d={maxInLine}/>
+                    <ReactART.Shape stroke="#aaa" d={maxOutLine}/>
+                    <ReactART.Text fill="#ddd" font='16px "Arial"' alignment='middle' x={width * 0.1} y={height * 0.25}>{formatTotalString(max.bytes_in)}</ReactART.Text>
+                    <ReactART.Text fill="#ddd" font='16px "Arial"' alignment='middle' x={width * 0.1} y={height * 0.75 - 16}>{formatTotalString(max.bytes_out)}</ReactART.Text>
                     <ReactART.Shape stroke="#fff" d={baseLine}/>
                 </ReactART.Group>
             </ReactART.Surface>
@@ -90,5 +69,25 @@ export default class SpanGraph extends FetchingComponent {
         if (width !== this.state.width) {
             this.setState({width: width, height: width / 5})
         }
+    }
+
+    createGraph(dir, field, max, deltas) {
+        const {width, height} = this.state
+        const graph = ReactART.Path()
+
+        if (max[field] > 0) {
+            const len = deltas.length
+            const graphHeight = height - 10
+
+            graph.moveTo(0, height/2)
+            deltas.forEach((delta, index) => {
+                graph.
+                    lineTo(index * width / len, (height + dir * delta[field]/max[field] * graphHeight)/2).
+                    lineTo((index + 1) * width / len, (height + dir * delta[field]/max[field] * graphHeight)/2)
+            })
+            graph.lineTo(width, height/2)
+        }
+
+        return graph
     }
 }
