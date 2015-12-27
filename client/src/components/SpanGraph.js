@@ -1,23 +1,30 @@
 import React from 'react'
 import ReactART from 'react-art'
 import ReactDOM from 'react-dom'
+import FetchingComponent from './FetchingComponent'
 
 import {throttle} from '../utils/dash'
 
-export default class SpanGraph extends React.Component {
+export default class SpanGraph extends FetchingComponent {
+    static propTypes = {
+        fetcher: React.PropTypes.func.isRequired
+    }
+
     constructor(props) {
-        super(props)
+        super(props, props.fetcher)
 
         this.updateDimensions = throttle(this.rescale.bind(this), 500)
         this.state = {width: 100, height:20}
     }
 
     componentDidMount() {
+        super.componentDidMount()
         window.addEventListener("resize", this.updateDimensions)
         this.rescale()
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount()
         window.removeEventListener("resize", this.updateDimensions)
     }
 
@@ -25,9 +32,8 @@ export default class SpanGraph extends React.Component {
         this.rescale()
     }
 
-    render() {
+    renderData({max, deltas}) {
         const {width, height} = this.state
-        const {max, deltas} = this.props.data
         var inGraph = ReactART.Path()
 
         if (max.bytes_in > 0) {
@@ -65,7 +71,7 @@ export default class SpanGraph extends React.Component {
         const baseLine = ReactART.Path().moveTo(0, height/2).lineTo(width, height/2)
 
         return (
-            <ReactART.Surface ref="surface" width={width} height={height} style={{backgroundColor: "black"}}>
+            <ReactART.Surface ref="node" width={width} height={height} style={{backgroundColor: "black"}}>
                 <ReactART.Group>
                     <ReactART.Shape fill={new ReactART.LinearGradient(['#040', '#000'], 0, height/2, 0, 0)} d={upperRect}/>
                     <ReactART.Shape fill={new ReactART.LinearGradient(['#400', '#000'], 0, height/2, 0, height)} d={lowerRect}/>
@@ -78,7 +84,7 @@ export default class SpanGraph extends React.Component {
     }
 
     rescale() {
-        const parent = ReactDOM.findDOMNode(this.refs.surface).parentNode
+        const parent = ReactDOM.findDOMNode(this.refs.node).parentNode
         const width = parent.offsetWidth - 30
 
         if (width !== this.state.width) {

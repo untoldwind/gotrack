@@ -1,14 +1,15 @@
 import React from 'react'
 
-export default class Fetcher extends React.Component {
-    static propTypes = {
-        fetcher: React.PropTypes.func.isRequired
-    }
-
-    constructor(props) {
+export default class FetcherComponent extends React.Component {
+    constructor(props, fetcher) {
         super(props)
 
+        this.fetcher = fetcher
         this.state = { fetchedData: null }
+
+        if (this.constructor === FetcherComponent) {
+            throw new TypeError('Abstract class "FetcherComponent" cannot be instantiated directly.');
+        }
     }
 
     componentDidMount() {
@@ -23,17 +24,15 @@ export default class Fetcher extends React.Component {
     render() {
         if (!this.state.fetchedData) {
             return (
-                <div></div>
+                <div ref="node"></div>
             )
         } else {
-            const child = React.Children.only(this.props.children)
-
-            return React.cloneElement(child, {data: this.state.fetchedData})
+            return this.renderData(this.state.fetchedData)
         }
     }
 
     fetch() {
-        this.props.fetcher().then(
+        this.fetcher().then(
             data => this.setState({fetchedData: data})
         )
     }

@@ -3,8 +3,6 @@ import React from 'react'
 import DeviceList from './DeviceList'
 import OverviewRates from './OverviewRates'
 import SpanGraph from './SpanGraph'
-import Fetcher from './Fetcher'
-import * as devices from '../backends/devices'
 import * as totals from '../backends/totals'
 
 export default class Overview extends React.Component {
@@ -15,23 +13,17 @@ export default class Overview extends React.Component {
                     <div className="col-xs-12">
                         <div className="panel panel-default">
                             <div className="panel-body">
-                                <Fetcher fetcher={totals.getSpan}>
-                                    <SpanGraph/>
-                                </Fetcher>
+                                <SpanGraph fetcher={totals.getSpan}/>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Fetcher fetcher={totals.getRates}>
-                    <OverviewRates/>
-                </Fetcher>
+                <OverviewRates/>
                 <div className="row">
                     <div className="col-xs-12">
                         <div className="panel panel-default">
                             <div className="panel-body">
-                                <Fetcher fetcher={devices.getDevices}>
-                                    <DeviceList/>
-                                </Fetcher>
+                                <DeviceList/>
                             </div>
                         </div>
                     </div>

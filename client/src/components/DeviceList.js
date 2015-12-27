@@ -1,15 +1,18 @@
 import React from 'react'
 import history from '../utils/history'
+import * as devices from '../backends/devices'
 
-export default class DeviceList extends React.Component {
+import FetchingComponent from './FetchingComponent'
+
+export default class DeviceList extends FetchingComponent {
     constructor(props) {
-        super(props)
+        super(props, devices.getDevices)
 
         this.state = {sortField: "name", sortAsc: true}
     }
 
-    render() {
-        const sorted = this.props.data.sort(this.sortFunction())
+    renderData(data) {
+        const sorted = data.sort(this.sortFunction())
         const rows = sorted.map((device, index) => {
             return (
                 <tr key={index} onClick={this.showDetails(device.ip_address)}>

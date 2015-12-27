@@ -4,12 +4,12 @@ import {Router, Route} from "react-router"
 import history from './utils/history'
 
 import Overview from './components/Overview'
-import DeviceDetails from './components/DeviceDetails'
+import DeviceOverview from './components/DeviceOverview'
 
 const routes = (
     <Router history={history}>
         <Route path="/" component={Overview}/>
-        <Route path="/devices/:deviceIp" component={DeviceDetails}/>
+        <Route path="/devices/:deviceIp" component={DeviceOverview}/>
     </Router>
 )
 
