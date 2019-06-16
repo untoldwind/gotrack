@@ -5,32 +5,35 @@ VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods \
 DEPPATH = $(firstword $(subst :, , $(GOPATH)))
 VERSION = $(shell date -u +.%Y%m%d.%H%M%S)
 
-all: export GOPATH=${PWD}/Godeps/_workspace:${PWD}/../../../..
+all: export GOPATH=${PWD}/../../../..
 all: format
 	@mkdir -p bin/
 	@echo "--> Running go build"
 	@go build -ldflags "-X github.com/untoldwind/gotrack/server/config.versionMinor=${VERSION}" -v -o bin/gotrack github.com/untoldwind/gotrack/server
 
-deps:
-	@echo "--> Installing build dependencies"
-	@go get -d -v ./server/... $(DEPS)
+bin/dep:
+	@echo "-> dep install"
+	@go get -u github.com/golang/dep/cmd/dep
+	@go build -v -o bin/dep github.com/golang/dep/cmd/dep
 
-updatedeps: deps
-	@echo "--> Updating build dependencies"
-	@go get -d -f -u ./server/... $(DEPS)
+dep.ensure: bin/dep
+	@echo "-> dep ensure"
+	@rm -rf .vendor-new
+	@rm -rf vendor
+	@bin/dep ensure
 
-test: export GOPATH=${PWD}/Godeps/_workspace:${PWD}/../../../..
+test: export GOPATH=${PWD}/../../../..
 test: deps
 	@echo "--> Running tests"
 	@go test -v ./server/...
 	@$(MAKE) vet
 
-format: export GOPATH=${PWD}/Godeps/_workspace:${PWD}/../../../..
-format: deps
+format: export GOPATH=${PWD}/../../../..
+format:
 	@echo "--> Running go fmt"
 	@go fmt ./server/...
 
-raspberry: export GOPATH=${PWD}/Godeps/_workspace:${PWD}/../../../..
+raspberry: export GOPATH=${PWD}/../../../..
 raspberry: export GOOS=linux
 raspberry: export GOARCH=arm
 raspberry: export CGO_ENABLED=0
@@ -39,7 +42,7 @@ raspberry:
 	@echo "--> Running go build (linux, arm)"
 	@go build -ldflags "-X github.com/untoldwind/gotrack/server/config.versionMinor=${VERSION}" -v -o bin/arm/gotrack github.com/untoldwind/gotrack/server
 
-vet: export GOPATH=${PWD}/Godeps/_workspace:${PWD}/../../../..
+vet: export GOPATH=${PWD}/../../../..
 vet:
 	@go tool vet 2>/dev/null ; if [ $$? -eq 3 ]; then \
 		go get golang.org/x/tools/cmd/vet; \

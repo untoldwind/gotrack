@@ -4,9 +4,10 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/binary"
-	"github.com/go-errors/errors"
 	"strconv"
 	"strings"
+
+	"github.com/go-errors/errors"
 )
 
 type Connection struct {
@@ -40,17 +41,17 @@ func parseRecord(line string) (*Record, error) {
 
 	hash.Write([]byte(protocol))
 
-	ttl, err := strconv.ParseUint(fields[2], 10, 64)
+	ttl, err := strconv.ParseUint(fields[4], 10, 64)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
 
 	var state string
-	if strings.IndexRune(fields[3], '=') < 0 {
-		state = fields[3]
-		fields = fields[4:]
+	if strings.IndexRune(fields[5], '=') < 0 {
+		state = fields[5]
+		fields = fields[6:]
 	} else {
-		fields = fields[3:]
+		fields = fields[5:]
 	}
 
 	sendConnection, fields, err := parseConnection(fields)

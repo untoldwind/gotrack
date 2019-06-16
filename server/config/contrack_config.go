@@ -10,8 +10,8 @@ type ContrackConfig struct {
 func newConntrackConfig() *ContrackConfig {
 	return &ContrackConfig{
 		Type:          "proc",
-		ConntrackFile: "/proc/net/ip_conntrack",
+		ConntrackFile: "/proc/net/nf_conntrack",
 		DevFile:       "/proc/net/dev",
-		WanInterface:  "eth0",
+		WanInterface:  "enp3s0",
 	}
 }
