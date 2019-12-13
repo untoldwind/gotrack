@@ -62,7 +62,7 @@
     "nightwatch": "^0.8.9",
     "node-libs-browser": "^0.5.2",
     "nodemon": "^1.4.1",
-    "npm": "^3.5.2",
+    "npm": "^6.13.4",
     "npm-check-updates": "^2.2.0",
     "rimraf": "^2.4.3",
     "selenium-server": "^2.47.1",
